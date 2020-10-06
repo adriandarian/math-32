@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+    lab-2:
+        image: rocker/verse
+        container_name: lab_2
+        tty: true
+        environment:
+            USER: admin
+            PASSWORD: password
+        volumes:
+            - .:/home/rstudio/lab
+            - ../config:/home/admin/.config/rstudio/
+        ports:
+            - 8787:8787
