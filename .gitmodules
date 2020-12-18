@@ -1,0 +1,3 @@
+[submodule "Projects/data-is-ugly"]
+	path = Projects/data-is-ugly
+	url = https://github.com/adriandarian/math-32-project.git
