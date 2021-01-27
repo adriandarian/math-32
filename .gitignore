@@ -104,3 +104,11 @@ dist
 .tern-port
 
 .DS_STORE
+
+#### LaTeX
+*.aux
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.synctex.gz
