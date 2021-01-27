@@ -1,0 +1,70 @@
+---
+title: "Introduction to R Markdown"
+author: "Adrian Darian"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+This assignment will introduce you to the `R Markdown` coding language.  Moreover, this `R Markdown` file (note the *.rmd extension) is a setting called "literate programming" where a user can alternate between regular typing---enhanced with markdown---and computer code (`R` or `Python`).  For reference, here is RStudio's own cheat sheet for R Markdown via the "Cheat Sheets" menu on the left.
+
+---
+
+Type your full name in the `author` field above.  State your major (including emphasis if applicable) and list your classes for this semester---course number and course name---below as an ***ordered-list***, from the one you think will be the most difficult to the least difficult.
+
+Major: **Computer Science and Engineering**
+
+1. Math 32 Probability and Statistics
+2. CSE 185 Computer Vision
+3. CSE 162 Mobile Computing
+4. CSE 120 Software Engineering
+
+---
+
+Why are you enrolled in Math 32? What are you hoping to learn and gain? (Please supply an answer that is more in-depth than "This course fulfills my statistics requirement".)
+
+I really want to learn more about R, because I have messed with it before but have a hard time choosing it over Python or JavaScript when I have a task to do some data analysis.
+
+---
+
+In 2-3 sentences, type a science fact that you find fascinating into the code block.  Set the parameters `echo = TRUE` and `eval = FALSE` so that RStudio does not treat the following as R code.
+
+```{r, echo = TRUE, eval = TRUE}
+# The black hole that is at the center of our galaxy has a friend that spins in circles with and scientists are trying to get video proof of this and not just photos
+
+```
+
+---
+
+Spend about 5 to 10 minutes typing out your answer to "What are you hopes and goals?" as a ***bullet-point list***.  Do not worry about grammar; just type fast.
+
+* Graduate College with my degree in hand
+* Complete all migrations of servers in the CatCard office to make it easier for new developers
+* Finish my personal website
+* Get a job where I can make an impact building some software to help change the world
+* Work on side projects 
+* Travel the world, visiting different places and taking my work on the road with me
+* Renovate my own apartment and make it all custom
+
+---
+
+Spend about 5 minutes typing out your answer to "What are your fears and obstacles?" into the code block.  Set the parameters `echo = FALSE` so that you do not show this part to your teachers and `eval = FALSE` so that RStudio does not treat the following as R code.
+
+```{r, echo = FALSE, eval = FALSE}
+# The only fears I have are not graduating, not getting a job, and then not being able to enjoy life.
+
+```
+
+---
+
+For this semester, instructor Derek wants to assemble a class playlist of popular music.  What is a good, lively song to add to a class playlist?  Place the song title between asterisks to *italicize* the song title and place the artist between two-pairs of asterisks so that the artist name appears in **boldface**.  (Beyond profanity, please avoid offensive content.)
+
+*Faster Car* - **Loving Caliber**
+
+---
+
+To submit this homework,
+
+* Save your work in the "Introduction_-_your name.rmd" convention
+* `knit` the code.  You should be able to see the HTML file in the Files pane (bottom right area here in RStudio Cloud)
+* Go to the Files pane (bottom right area here in RStudio Cloud), click the "More" button, check the box by the HTML file, then "Export"
+* upload the HTML file back into our CatCourses page
