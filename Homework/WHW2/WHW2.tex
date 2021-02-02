@@ -1,0 +1,138 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fullpage} % Package to use full page
+\usepackage{parskip} % Package to tweak paragraph skipping
+\usepackage{tikz} % Package for drawing
+\usepackage{amsmath}
+\usepackage{siunitx} % Package for scientific units
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{multicol}
+\usepackage{graphicx} % Package for including images
+\usepackage{mathtools}
+\usepackage{pgfplots}
+\usepackage{makecell}
+\graphicspath{ {./images/} }
+
+\newcommand\tab[1][0.5cm]{\hspace*{#1}}
+\DeclarePairedDelimiter\Floor\lfloor\rfloor
+\DeclarePairedDelimiter\Ceil\lceil\rceil
+\usepgfplotslibrary{polar}
+\usepgflibrary{shapes.geometric}
+\usetikzlibrary{calc}
+\pgfplotsset{my style/.append style={axis x line=middle, axis y line=
+middle, xlabel={$x$}, ylabel={$y$} }}
+\pgfplotsset{compat=1.14}
+\usepgfplotslibrary{fillbetween}
+
+
+\title{Written Homework 2}
+\author{Adrian Darian}
+\date{2/1/2021}
+
+\begin{document}
+  
+\maketitle
+  
+Complete the following tasks. You need to show work for full credit. In particular, for integrals, you may use resources like Wolfram Alpha to check your answers, but you need to show your work during Math 32 homework and exams. Some answers have been provided.
+
+Assemble your work into one PDF document and upload the PDF back into our CatCourses page.
+
+\begin{itemize}
+	\item[1.] Here is some hypothetical drug-testing data. \\
+	      \begin{tabular}{c|cc|c}
+	      	                                    & \makecell{\textbf{Positive Test Result} \\ (drug use is indicated)} & \makecell{\textbf{Negative Test Result} \\ (drug use is not indicated)} & \\
+	      	\hline
+	      	\textbf{Subject Uses Drugs}         & \makecell{44 \\ (true positive)} & \makecell{6 \\ (false negative)} & 50 \\
+	      	\hline
+	      	\textbf{Subject is Not a Drug User} & \makecell{90 \\ (false positive)} & \makecell{860 \\ (true negative)} & 950 \\
+	      	\hline
+	      	total                               & 134                                     & 866 & 1000
+	      \end{tabular} 
+	      \begin{itemize}
+	      	\item[a.] \textbf{False positive} Find the probability of selecting a subject with a positive test result, given that the subject does not use drugs.
+	      	\textbf{Answer:} $\frac{90}{950} = 0.0947$ 
+	      	\item[b.] \textbf{False negative} Find the probability of selecting a subeject with a negative test result, given that the subject uses drugs.
+	      	\textbf{Answer:} $\frac{6}{50} = 0.12$
+	      \end{itemize} 
+	\item[2.] \textbf{FizzBuzz and the Conditional Probabilities} In this setting, the universal set is the set of natural numbers from 1 to 32 \\
+	\begin{equation}
+        \begin{split}
+            \{1, 2, 3, 4, \cdots, 32\}
+        \end{split}
+    \end{equation} 
+    Let $T$ be the subset of numbers that are divisible by 3 and let $F$ be the subset of numbers that are divisible by 5.
+    \begin{itemize}
+        \item[(a)] Write out the elements of each of the following sets: $F, T, F \cup T, F \cap T$ \\
+        \textbf{Answer:} 
+        \begin{tabular}{rcl}
+            $F$        & $=$ & $\{5, 10, 15, 20, 25, 30\}$ \\
+            $T$        & $=$ & $\{3, 6, 9, 12, 15, 18, 21, 24, 27, 30\}$ \\
+            $F \cup T$ & $=$ & $\{3, 5, 6, 9, 10, 12, 15, 18, 20, 21, 24, 25, 27, 30\}$ \\
+            $F \cap T$ & $=$ & $\{15, 30\}$ \\
+        \end{tabular}
+        \item[(b)] Compute $P(F \cup T)$
+        \textbf{Answer:} $\frac{14}{32}$
+        \item[(c)] Compute $P(F \cap T)$
+        \textbf{Answer:} $\frac{2}{32}$
+        \item[(d)] Compute $P(F|T)$
+        \textbf{Answer:}  
+        \begin{equation}
+            \begin{split}
+                \frac{P(F \cap T)}{P(T)} \\
+                \frac{\frac{2}{32}}{\frac{10}{32}} \\
+                \frac{2}{10}
+            \end{split}
+        \end{equation}
+        \item[(e)] Compute $P(T|F)$
+        \textbf{Answer:} 
+        \begin{equation}
+            \begin{split}
+                \frac{P(F \cap T)}{P(F)} \\
+                \frac{\frac{2}{32}}{\frac{6}{32}} \\
+                \frac{2}{6}
+            \end{split}
+        \end{equation} 
+        \item[(f)] Does $P(F|T) = P(T|F)$?
+        \textbf{Answer:} No 
+    \end{itemize}
+	\item[3.] Black Lives Matter (BLM) formed a few years ago. According to a recent article from the Pew Research Center, the probability that a person supports BLM given that the person is Hispanic is about 33 percent. The probability that a person supports BLM given that the person is not Hispanic is about 44 percent. About 16.3 percent of Americans identify as Hispanic. Compute the probability that a person is Hispanic given that the person supports BLM. \\
+    \textbf{Answer:}  
+    \begin{equation}
+        \begin{split}
+            \frac{(0.33 \times 0.163)}{(0.33 \times 0.163 + (1 - 0.163) \times 0.44)} = 0.1274
+        \end{split}
+    \end{equation} 
+	\item[4.] According to the Stack Overflow Developers Survey of 2018, 25.8\% of developers are students. The probability that a developer is a woman given that the developer is a student is 7.4\%, and the probability that a developer is a woman given that the developer is not a student is 76.4\%. If we encounter a woman developer, what is the probability that she is a student? \\
+    \textbf{Answer:} 
+    \begin{equation}
+        \begin{split}
+            \frac{(0.258 \times 0.074)}{(0.258 \times 0.074 + (1 - 0.258) \times 0.764)} = 0.0326
+        \end{split}
+    \end{equation} 
+	\item[5.] A PhD student at Drexel University is studying a cultural trend called "sexting". Sexting takes place 73.9\% of the time given a committed relationship, and sexting takes place 43.0\% of the time given a casual relationship. About 67\% of Americans are in committed relationships. Given that you accidentally catch a person secting in COB 105, what is the probability that, that person is in a committed relationship? \\
+    \textbf{Answer:}  
+    \begin{equation}
+        \begin{split}
+            \frac{(0.739 \times 0.67)}{(0.739 \times 0.67 + (1 - 0.67) \times 0.43)} = 0.7772
+        \end{split}
+    \end{equation}
+	\item[6.] A tattoo enthusiast website claims that \\
+	      \begin{itemize}
+	      	\item 47\% of Millennials have tattoos
+	      	\item 36\% of Generation X have tattoos
+	      	\item 13\% of Boomers have tattoos
+	      \end{itemize} 
+          whereas the population proportions are 22\%, 20\%, and 22\% for those generations respectively. Compute the probability that a person is a Millennial given that they have tattoos. \\
+          \textbf{Answer:} 
+          \begin{equation}
+            \begin{split}
+                \frac{(0.47 \times 0.22)}{(0.47 \times 0.22 + 0.36 \times 0.2 + 0.13 \times 0.22)} = 0.5069
+            \end{split}
+        \end{equation}
+\end{itemize}
+
+\end{document}
