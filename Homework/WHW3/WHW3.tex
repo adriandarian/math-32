@@ -1,0 +1,66 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fullpage} % Package to use full page
+\usepackage{parskip} % Package to tweak paragraph skipping
+\usepackage{tikz} % Package for drawing
+\usepackage{amsmath}
+\usepackage{siunitx} % Package for scientific units
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{multicol}
+\usepackage{graphicx} % Package for including images
+\usepackage{mathtools}
+\usepackage{pgfplots}
+\graphicspath{ {./images/} }
+
+\newcommand\tab[1][0.5cm]{\hspace*{#1}}
+\DeclarePairedDelimiter\Floor\lfloor\rfloor
+\DeclarePairedDelimiter\Ceil\lceil\rceil
+\usepgfplotslibrary{polar}
+\usepgflibrary{shapes.geometric}
+\usetikzlibrary{calc}
+\pgfplotsset{my style/.append style={axis x line=middle, axis y line=
+middle, xlabel={$x$}, ylabel={$y$} }}
+\pgfplotsset{compat=1.14}
+\usepgfplotslibrary{fillbetween}
+
+
+\title{Written Homework 3}
+\author{Adrian Darian}
+\date{2/12/2021}
+
+\begin{document}
+  
+\maketitle
+  
+Complete the following tasks. You need to show work for full credit. In particular, for integrals, you may use resources like Wolfram Alpha to check your answers, but you need to show your work during Math 32 homework and exams. Some answers have been provided. 
+
+Assemble your work into one PDF document and upload the PDF back into our CatCourses page.
+
+\begin{itemize}
+	\item[1.]  On September 24, 2017, Germany held their national elections. The following are the preliminary results by percentages. Compute the mean and median percentage to summarize the parties.
+	      \begin{tabular}{|c|c|c|c|c|c|c|c|}
+	      	Party      & CDU  & SPD  & AFD  & FDP  & Die Linke & Grune & (other) \\
+	      	Percentage & 33.0 & 20.5 & 12.6 & 10.7 & 9.2       & 8.9   & 5.1     \\
+	      \end{tabular}
+	\item[2.] For the first time, mixed doubles curling was an event at the Winter Olympics. Below are the number of ends won by siblings Becca and Matt Hamilton during the round-robin stage. Find the mean and median number of ends won.
+	      \begin{equation}
+	      	\begin{split}
+	      		            4, 4, 5, 10, 9, 1, 4
+	      	\end{split}
+	      \end{equation}
+	\item[3.] Please help the Department of the Interior compute the average and median number of wildfires in the year 2018 in the western region of the United States using the following table of data
+	\item[4.] Combinations Here we will work with the "choose operations"
+	\begin{itemize}
+		\item[(a)] Compute 
+	\end{itemize} 
+	\item[5.] Patterns For the calculations in this problem, you may simply use a calculator 
+	\item[6.] Each day in Bio 18, Derek leaves a stack of paper packets near the entry door for students to obtain. Eighty-one percent of students grab a packet before being seated. If we observe a random selection of nine students, what is the probability that exactly two students sit first before grabbing a packet.
+	\item[7.] According to the New York Times eleven percent of parents helped their college children write an essay. If I collect seven essays, that is the probability that at most two of those submissions had parental assistance?
+	\item[8.] Suppose that at a famous aquarium, a docent found that 35 percent of elementary school children know the difference between dolphins and porpoises. If a docent has a tour group that has 9 elementary school children, what is the probability that at least two of the children know the difference between dolphins and porpoises?   
+\end{itemize}
+
+\end{document}
