@@ -1,0 +1,5 @@
+sum(x)
+dbinom(k, n, p)
+pbinom(k, n, p)
+dgeom(k, p)
+pgeom(k, p)
