@@ -1,0 +1,284 @@
+---
+title: "Regression over Multiple Varibles"
+author: "Derek Sollberger"
+date: "4/15/2021"
+output: 
+  html_document:
+    toc: TRUE
+    theme: cerulean
+---
+
+```{r setup, message = FALSE, warning = FALSE}
+library("moderndive")     #for get_correlation() function
+library("palmerpenguins") #data set for practice
+library("patchwork")      #easily place graphs side-by-side
+library("tidyverse")      #suite of packages for data science ease
+```
+
+# Recap
+
+* Today's tutorial is similar to [Chapter 6](https://moderndive.com/6-multiple-regression.html) of the *Statistical Inference* textbook
+
+```{r}
+# https://allisonhorst.github.io/palmerpenguins/
+penguins
+```
+
+```{r}
+colnames(penguins)
+```
+
+```{r}
+# structure of the data frame
+str(penguins)
+```
+
+
+```{r}
+one_num_var_model <- lm(flipper_length_mm ~ body_mass_g, data = penguins)
+```
+
+```{r}
+one_cat_var_model <- lm(flipper_length_mm ~ species, data = penguins)
+```
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{Chin} \cdot \vec{1}_{Chin} + b_{Gent} \cdot \vec{1}_{Gent}$$
+
+```{r}
+indicator_df <- penguins %>%
+  mutate(Adelie_ind    = ifelse(species == "Adelie",    1, 0),
+         Chinstrap_ind = ifelse(species == "Chinstrap", 1, 0),
+         Gentoo_ind    = ifelse(species == "Gentoo",    1, 0)) %>%
+  select(species, Adelie_ind, Chinstrap_ind, Gentoo_ind)
+```
+
+$$\vec{1}_{Chin} = \begin{cases}
+  1 & \text{if penguin is of Chinstrap species} \\
+  0 & \text{if penguin is not a Chinstrap}
+\end{cases}$$
+
+# Multiple Regression
+
+## One numerical and one categorical variable
+
+```{r}
+# note where the plus sign (+) is
+parallel_slopes_model <- lm(flipper_length_mm ~ body_mass_g + species, data = penguins)
+```
+
+```{r}
+parallel_slopes_model
+```
+
+```{r}
+get_regression_table(parallel_slopes_model)
+```
+
+## Parallel slopes
+
+```{r, message = FALSE, warning = FALSE}
+parallel_slopes_viz <- penguins %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm, 
+             color = species, group = species)) +
+  geom_point() +
+  geom_parallel_slopes(se = FALSE) + #function from moderndive package
+  labs(title = "Palmer Penguins",
+       subtitle = "parallel slopes",
+       caption = "Bio 175",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+
+parallel_slopes_viz
+```
+
+```{r}
+parallel_slopes_model <- lm(flipper_length_mm ~ body_mass_g + species, data = penguins)
+```
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass} + b_{Chin} \cdot \vec{1}_{Chin} + b_{Gent} \cdot \vec{1}_{Gent}$$
+
+For an Adelie penguin
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass}$$
+$$\hat{\text{flipper_length}} = 158.860 + 0.008 \cdot \text{mass}$$
+
+For a Chinstrap penguin
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass} + b_{Chin}$$
+$$\hat{\text{flipper_length}} = 158.860 + 0.008 \cdot \text{mass} + 5.597$$
+
+For a Gentoo penguin
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass} + b_{Gent}$$
+$$\hat{\text{flipper_length}} = 158.860 + 0.008 \cdot \text{mass} + 15.677$$
+
+
+## Interaction terms
+
+```{r}
+# note the use of the multiplication symbol (*) between the explanatory variables
+interaction_model <- lm(flipper_length_mm ~ body_mass_g * species, data = penguins)
+```
+
+```{r}
+get_regression_table(interaction_model)
+```
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass} + b_{Chin} \cdot \vec{1}_{Chin} + b_{Gent} \cdot \vec{1}_{Gent} + b_{mass,Chin} \cdot \vec{1}_{Chin} \cdot \text{mass} + b_{mass,Gent} \cdot \vec{1}_{Gent} \cdot \text{mass}$$
+
+```{r, message = FALSE, warning = FALSE}
+interaction_model_viz <- penguins %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm, 
+             color = species, group = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Palmer Penguins",
+       subtitle = "interaction model",
+       caption = "Bio 175",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+interaction_model_viz
+```
+
+```{r, message = FALSE, warning = FALSE}
+interaction_model_viz + parallel_slopes_viz
+```
+
+
+For an Adelie penguin
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass}$$
+$$\hat{\text{flipper_length}} = 165.245	 + 0.007 \cdot \text{mass}$$
+For a Chinstrap penguin
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass} + b_{Chin} + b_{mass,Chin} \cdot \text{mass}$$
+$$\begin{array}{rcl}
+  \hat{\text{flipper_length}} & = & 165.245	 + 0.007 \cdot \text{mass} - 13.864 + 0.005 \cdot \text{mass} \\
+  ~ & = & (165.245 - 13.864) + (0.007 + 0.005) \cdot \text{mass} \\
+\end{array}$$
+
+For a Gentoo penguin
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{mass} \cdot \text{mass} + b_{Gent} + b_{mass,Gent} \cdot \text{mass}$$
+$$\begin{array}{rcl}
+  \hat{\text{flipper_length}} & = & 165.245	 + 0.007 \cdot \text{mass} + 6.059 + 0.002 \cdot \text{mass} \\
+  ~ & = & (165.245 + 6.059) + (0.007 + 0.002) \cdot \text{mass} \\
+\end{array}$$
+
+
+# Multiple Numerical Variables
+
+```{r}
+multi_num_var_model <- lm(flipper_length_mm ~ bill_length_mm + bill_depth_mm + body_mass_g,
+                          data = penguins)
+```
+
+```{r}
+get_regression_table(multi_num_var_model)
+```
+$$\hat{\text{flipper_length}} = b_{0} + b_{\text{bill_length}} \cdot \text{bill_length} + b_{\text{bill_depth}} \cdot \text{bill_depth} + b_{\text{body_mass}} \cdot \text{body_mass}$$
+$$\hat{\text{flipper_length}} = 157.786 + 0.592 \cdot \text{bill_length} - 1.679	 \cdot \text{bill_depth} + 0.011 \cdot \text{body_mass}$$
+
+```{r, message = FALSE, warning = FALSE}
+multi_num_var_viz1 <- penguins %>%
+  ggplot(aes(x = bill_length_mm, y = flipper_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "1st explanatory variable",
+       x = "bill length (in mm)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+
+multi_num_var_viz2 <- penguins %>%
+  ggplot(aes(x = bill_depth_mm, y = flipper_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "2nd explanatory variable",
+       x = "bill depth (in mm)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+
+multi_num_var_viz3 <- penguins %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "3rd explanatory variable",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+
+(multi_num_var_viz1 + multi_num_var_viz2 ) / multi_num_var_viz3
+```
+
+# Correlation Check
+
+```{r}
+penguins_num_vars <- penguins %>%
+  select_if(is.numeric)
+
+round(cor(penguins_num_vars,
+    use = "pairwise.complete.obs"), 2)
+```
+
+
+# Model Selection
+
+## Variation
+
+With the notation $\huge \bar{y}$ for the sample mean and $\huge\hat{y}$ for the predicted value (on the regression line), we say for each $\huge y$-value in the data, we have
+
+* Explained deviation: $\huge \hat{y} - \bar{y}$
+* Unexplained deviation: $\huge y - \hat{y}$
+* Total deviation: $\huge y - \bar{y}$
+
+It follows that the
+
+total variation = explained variation + unexplained variation
+$$\huge\sum(y - \bar{y})^{2} = \sum(\hat{y} - \bar{y})^{2} + \sum(y - \hat{y})^{2}$$
+
+## Coefficient of Determination
+
+The **coefficient of determination**
+$$\huge r^{2} = \frac{\text{explained variation}}{\text{total variation}}$$
+is the proportion of the variation in the outcome (y) that is *explained* by the regression model.
+
+
+* want more 'explained variation', thus higher $r^{2}$ means a better model
+
+
+## Multiple vs. Adjusted R-Squared Values
+
+You will notice that R will report two different numbers for the $\huge r^{2}$ calculation.
+
+The "Multiple R-squared" calculation tends to be flawed in practice because it can be corrupted or unreliable when we use more predictor variables (see: "curse of dimensionality" and "Simpson's Paradox").  
+
+Here in Bio 175, I recommend using the "Adjusted R-squared" value that accounts for the number of predictor variables.  Treat negative adjusted R-squared values simply as zero variation explained, and then look for the highest adjusted R-squared values.
+
+## Picking today's top model
+
+```{r}
+get_regression_summaries(one_num_var_model)
+```
+
+```{r}
+get_regression_summaries(one_cat_var_model)
+```
+
+```{r}
+get_regression_summaries(parallel_slopes_model)
+```
+
+```{r}
+get_regression_summaries(interaction_model)
+```
+
+```{r}
+get_regression_summaries(multi_num_var_model)
+```
+
+Since the $r^2$ value of the `interaction_model` is the highest, that is the best model that we have encountered this week.
+

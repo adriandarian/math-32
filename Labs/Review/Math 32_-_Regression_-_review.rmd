@@ -1,0 +1,219 @@
+---
+title: "Review of Linear Regression"
+author: "Derek Sollberger"
+date: "4/13/2021"
+output: html_document
+---
+
+```{r setup, message = FALSE}
+library("moderndive")     #get_correlation() and get_regression_*() functions
+library("palmerpenguins") #data set for practice
+library("skimr")          #tools to quickly extract summary statistics
+library("tidyverse")      #suite of packages for data science coding ease
+```
+
+# Setting
+
+* Chapter 5 of [*Statistical Interference: A Modern Dive Approach*](https://moderndive.com/5-regression.html)
+* [Palmer Penguins data set](https://allisonhorst.github.io/palmerpenguins/)
+
+```{r}
+penguins
+```
+
+```{r}
+colnames(penguins)
+```
+
+```{r}
+skim(penguins)
+```
+
+# Data Wrangling
+
+```{r}
+# making a copy (i.e. to not modify original data)
+penguin_df <- penguins
+```
+
+* Boolean variables take on the values either `TRUE` or `FALSE`
+
+```{r}
+penguin_df <- penguin_df %>%
+  mutate(Gentoo_bool = ifelse(species == "Gentoo", "is Gentoo", "not Gentoo"))
+```
+
+```{r}
+penguin_df <- penguin_df %>%
+  mutate(size_bool = ifelse(body_mass_g > 4050, "large", "small"))
+```
+
+```{r}
+Adelie_df <- penguins %>%
+  filter(species == "Adelie")
+
+Chinstrap_df <- penguins %>%
+  filter(species == "Chinstrap")
+
+Gentoo_df <- penguins %>%
+  filter(species == "Gentoo")
+```
+
+```{r}
+skim(Gentoo_df)
+```
+
+# Correlation
+
+```{r}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point() +
+  labs(title = "Palmer Penguins",
+       subtitle = "scatterplot",
+       caption = "Source: Palmer Penguins",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)")
+```
+
+```{r}
+penguins %>% 
+  get_correlation(formula = flipper_length_mm ~ body_mass_g,
+                  na.rm = TRUE)
+```
+
+# Best-Fit Line
+
+```{r}
+Chinstrap_df %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + #"lm" for linear model
+  labs(title = "Chinstrap Penguins",
+       subtitle = "linear regression",
+       caption = "Source: Palmer Penguins",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+```
+
+```{r}
+lin_fit <- lm(flipper_length_mm ~ body_mass_g, data = Chinstrap_df)
+lin_fit
+```
+* $y$: true outcomes (outputs from the data itself)
+* $\hat{y}$: estimates (outputs from regression model)
+* $y - \hat{y}$: residuals
+
+```{r}
+get_regression_table(lin_fit)
+```
+
+```{r}
+get_regression_points(lin_fit)
+```
+
+```{r}
+Chinstrap_df %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point() +
+  geom_point(aes(y = .fitted), data = lin_fit, 
+             color = "blue", shape = 2, size = 2) +
+  geom_segment(aes(xend = body_mass_g ,yend = .fitted), data = lin_fit,
+               color = "red") +
+  labs(title = "Chinstrap Penguins",
+       subtitle = "Best-Fit Line and Residuals",
+       caption = "Bio 175",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+```
+
+```{r}
+residual_df <- get_regression_points(lin_fit)
+mean(residual_df$residual)
+```
+
+Loosely speaking, the best-fit line balances the positive and negative residuals.
+
+Example: Predict the flipper length of a 4 kg Chinstrap penguin?
+
+```{r}
+predict(lin_fit, data.frame(body_mass_g = 4000))
+```
+
+```{r}
+lin_fit2 <- lm(flipper_length_mm ~ body_mass_g, data = penguins)
+predict(lin_fit2, data.frame(body_mass_g = 5000))
+```
+
+
+# Using a Categorical Variable
+
+```{r}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm, 
+             color = species, group = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Palmer Penguins",
+       subtitle = "grouped by species",
+       caption = "Bio 175",
+       x = "body mass (in grams)",
+       y = "flipper length (in mm)") +
+  theme_minimal()
+```
+
+```{r}
+species_fit <- lm(flipper_length_mm ~ species, data = penguins)
+```
+
+```{r}
+get_regression_table(species_fit)
+```
+
+```{r}
+summary(Adelie_df$flipper_length_mm)
+```
+
+```{r}
+summary(Chinstrap_df$flipper_length_mm)
+```
+
+```{r}
+summary(Gentoo_df$flipper_length_mm)
+```
+```{r}
+get_regression_table(species_fit)
+```
+
+* the Adelie species is treated as the *baseline* value
+* comparing the means, the 5.870 is the difference between the Chinstrap mean and the Adelie mean
+* comparing the means, the 27.233 is the difference between the Gentoo mean and the Adelie mean
+
+$$\hat{\text{flipper_length}} = b_{0} + b_{Chin} \cdot \vec{1}_{Chin} + b_{Gent} \cdot \vec{1}_{Gent}$$
+
+```{r}
+indicator_df <- penguins %>%
+  mutate(Adelie_ind    = ifelse(species == "Adelie",    1, 0),
+         Chinstrap_ind = ifelse(species == "Chinstrap", 1, 0),
+         Gentoo_ind    = ifelse(species == "Gentoo",    1, 0)) %>%
+  select(species, Adelie_ind, Chinstrap_ind, Gentoo_ind)
+```
+
+$$\vec{1}_{Chin} = \begin{cases}
+  1 & \text{if penguin is of Chinstrap species} \\
+  0 & \text{if penguin is not a Chinstrap}
+\end{cases}$$
+
+$$\vec{1}_{Gent} = \begin{cases}
+  1 & \text{if penguin is of Gentoo species} \\
+  0 & \text{if penguin is not a Gentoo}
+\end{cases}$$
+
+Example: Predict the flipper length of a Chinstrap penguin.
+
+```{r}
+predict(species_fit, data.frame(species = "Chinstrap"))
+```
+
